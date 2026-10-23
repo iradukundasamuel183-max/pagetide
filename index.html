@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pagetide: Real books. Real moments.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--pine:#03302A;--emerald:#064E3B;--leaf:#7AC043;--champ:#F8E7C9;--brown:#8B5E3C;--bg:#FAF8F2;--card:#FFFFFF;--soft:#E8EBE6;--sage:#B9C2B6;--ink:#141414;--mut:#4A5750;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0B1713;--card:#12271F;--soft:#1E3A30;--sage:#4A5F55;--ink:#F3EFE4;--mut:#A9B8AF;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0B1713;--card:#12271F;--soft:#1E3A30;--sage:#4A5F55;--ink:#F3EFE4;--mut:#A9B8AF;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.6 "DM Sans",system-ui,sans-serif}
+h1,h2,h3,.serif{font-family:Fraunces,Georgia,serif}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.top{background:var(--pine);color:#FAF8F2;display:flex;align-items:center;gap:20px;padding:14px 24px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:700 26px Fraunces,Georgia,serif;color:#FAF8F2;text-decoration:none}
+.top nav{display:flex;gap:18px;margin-left:auto;align-items:center}
+.top a.l{color:#FAF8F2;text-decoration:none;opacity:.9}
+.top a.l:hover{text-decoration:underline}
+.lang{background:transparent;border:1px solid var(--sage);color:#FAF8F2;border-radius:99px;padding:4px 14px;cursor:pointer}
+.hero{background:var(--pine);color:#FAF8F2;padding:48px 24px 72px;text-align:center}
+.hero h1{margin:0;font-size:clamp(34px,6vw,62px);line-height:1.1;color:var(--champ);font-weight:700}
+.hero p{max-width:540px;margin:16px auto 0;color:#D9E4DC}
+.search{display:flex;gap:8px;max-width:580px;margin:28px auto 0}
+.search input{flex:1;min-width:0;border:0;border-radius:99px;padding:13px 20px;background:#FAF8F2;color:#141414}
+.btn{border:0;border-radius:99px;padding:12px 24px;font-weight:500;cursor:pointer;background:var(--leaf);color:var(--pine)}
+.btn.alt{background:transparent;border:1px solid var(--sage);color:var(--ink)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:20px}
+.chip{border:1px solid #3D6B5C;background:transparent;color:#EAF1EC;border-radius:99px;padding:6px 16px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--champ);color:var(--pine);border-color:var(--champ)}
+.wrap{max-width:1080px;margin:0 auto;padding:40px 24px}
+.wrap h2{font-size:28px;margin:0 0 20px;font-weight:600}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:20px}
+.card{background:var(--card);border:1px solid var(--soft);border-radius:12px;overflow:hidden;cursor:pointer;text-align:left;padding:0;display:flex;flex-direction:column}
+.card:hover{border-color:var(--sage)}
+.cover{height:190px;padding:14px;display:flex;align-items:flex-end;font:600 19px/1.2 Fraunces,Georgia,serif;color:#FAF8F2}
+.c0{background:var(--emerald)}.c1{background:var(--pine)}.c2{background:var(--brown)}.c3{background:#3F6B3A}
+.meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--mut)}
+.meta strong{color:var(--ink);font-size:15px}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{background:var(--soft);color:var(--ink);border-radius:6px;padding:1px 8px;font-size:12px}
+.tag.p{background:var(--champ);color:#5A3A1E}
+.empty{color:var(--mut);padding:24px 0}
+#detail{background:var(--card);border:1px solid var(--soft);border-radius:14px;padding:24px;margin-bottom:32px}
+#detail h2{margin:0}
+.acts{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
+#reader{background:var(--bg);border:1px solid var(--soft);border-radius:10px;padding:20px 24px;max-width:68ch;font-family:Fraunces,Georgia,serif;line-height:1.8}
+.pub{background:var(--soft)}
+form{display:grid;gap:14px;max-width:560px}
+label{display:grid;gap:4px;font-weight:500;font-size:14px}
+form input,form select,form textarea{border:1px solid var(--sage);border-radius:8px;padding:10px 12px;background:var(--card)}
+.msg{min-height:1.5em;margin:0}.msg.bad{color:#B3261E}.msg.ok{color:#2E7D32}
+:root[data-theme="dark"] .msg.bad{color:#FF9A92}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .msg.bad{color:#FF9A92}:root:not([data-theme="light"]) .msg.ok{color:#8FD694}}
+[hidden]{display:none!important}
+#homeView{background:#FFFFFF}
+#browse{--bg:#FFFFFF;--card:#FFFFFF;--soft:#E8EBE6;--sage:#B9C2B6;--ink:#141414;--mut:#4A5750;color:#141414}
+.lk{background:none;border:0;color:#FAF8F2;cursor:pointer;padding:6px 4px}
+.lk:hover{text-decoration:underline}
+.top .btn{padding:8px 20px}
+#who{color:#FAF8F2}
+.menuBtn{background:none;border:0;color:#FAF8F2;cursor:pointer;padding:4px;display:flex}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(320px,86vw);background:var(--bg);color:var(--ink);z-index:21;padding:calc(24px + env(safe-area-inset-top,0px)) 0 calc(24px + env(safe-area-inset-bottom,0px));overflow-y:auto}
+#drawer h3{margin:22px 24px 6px;font:700 15px "DM Sans",sans-serif;text-transform:uppercase}
+.mi{display:block;width:100%;text-align:left;background:none;border:0;border-bottom:1px solid var(--soft);padding:12px 24px;cursor:pointer;color:var(--ink)}
+.mi:hover{background:var(--soft)}
+.x{position:absolute;top:10px;right:14px;background:none;border:0;font-size:28px;line-height:1;cursor:pointer;color:var(--ink)}
+#modal{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:20px}
+.panel{background:var(--card);border-radius:14px;padding:28px 24px 24px;width:min(420px,100%);position:relative;max-height:100%;overflow-y:auto}
+.panel h2{margin:0 0 8px;font-size:24px}
+.panel form{max-width:none}
+.choice{display:grid;gap:10px;margin-top:16px}
+.back{background:none;border:0;color:var(--ink);cursor:pointer;margin-bottom:12px;padding:0;text-decoration:underline}
+footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#top">
+    <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path d="M5 15v17c4-2 10-2 15 1V16c-5-3-10-3-15-1z" fill="#FAF8F2"/><path d="M35 15v17c-4-2-10-2-15 1V16c5-3 10-3 15-1z" fill="#FAF8F2" opacity=".85"/><path d="M20 3c9 2 13 10 10 17-7-1-12-7-10-17z" fill="#7AC043"/></svg>
+    Pagetide
+  </a>
+  <nav>
+    <button class="lang" id="langBtn" type="button" aria-label="Change language">FR</button>
+    <button class="lk" id="loginBtn" type="button" data-i="login">Log In</button>
+    <button class="btn" id="signupBtn" type="button" data-i="signup">Sign Up</button>
+    <span id="who" hidden></span>
+    <button class="lk" id="logoutBtn" type="button" hidden data-i="logout">Log out</button>
+    <button class="menuBtn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="drawer"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
+  </nav>
+</header>
+
+<div id="homeView">
+<section class="hero" id="top">
+  <h1 data-i="tag">Real books. Real moments.</h1>
+  <p data-i="sub">Search free classics, read them in your browser, or publish your own book.</p>
+  <div class="search" role="search">
+    <input id="q" type="search" data-p="ph" placeholder="Search by title or author" aria-label="Search books">
+    <button class="btn" id="go" type="button" data-i="search">Search</button>
+  </div>
+  <div class="chips" id="chips"></div>
+</section>
+
+<main class="wrap" id="browse">
+  <section id="detail" hidden aria-live="polite">
+    <h2 id="dt"></h2>
+    <div id="da" style="color:var(--mut)"></div>
+    <p id="dd"></p>
+    <div class="acts">
+      <button class="btn" id="readBtn" type="button" data-i="read">Read</button>
+      <button class="btn alt" id="bmBtn" type="button"></button>
+      <button class="btn alt" id="smaller" type="button" aria-label="Smaller text">A−</button>
+      <button class="btn alt" id="bigger" type="button" aria-label="Bigger text">A+</button>
+      <button class="btn alt" id="closeBtn" type="button" data-i="close">Close</button>
+    </div>
+    <div id="reader" hidden></div>
+  </section>
+  <h2 data-i="browse">Browse</h2>
+  <div class="grid" id="grid"></div>
+</main>
+</div>
+
+<section class="pub" id="publish" hidden>
+  <div class="wrap">
+    <button class="back" id="backHome" type="button" data-i="backHome">Back to home</button>
+    <h2 data-i="ptitle">Publish your book</h2>
+    <form id="form" novalidate>
+      <label><span data-i="ft">Title</span><input name="t" maxlength="120"></label>
+      <label><span data-i="fa">Author</span><input name="a" maxlength="80"></label>
+      <label><span data-i="fl">Language</span>
+        <select name="l"><option value="en">English</option><option value="fr">Français</option><option value="rw">Kinyarwanda</option></select></label>
+      <label><span data-i="fg">Category</span><select name="g" id="gsel"></select></label>
+      <label><span data-i="fd">Description</span><textarea name="d" rows="3" maxlength="500"></textarea></label>
+      <label><span data-i="fp">Price (RWF, 0 for free)</span><input name="p" type="number" min="0" value="0"></label>
+      <p class="msg" id="msg" role="status"></p>
+      <div><button class="btn" type="submit" data-i="submit">Submit for review</button></div>
+    </form>
+  </div>
+</section>
+
+<div id="scrim" hidden></div>
+<aside id="drawer" hidden aria-label="Menu">
+  <button class="x" id="drawerX" type="button" aria-label="Close menu">×</button>
+  <h3 data-i="mBrowse">Browse</h3>
+  <button class="mi" type="button" data-go="all" data-i="mAll">All books</button>
+  <button class="mi" type="button" data-go="cats" data-i="mCats">Categories</button>
+  <button class="mi" type="button" data-go="random" data-i="mRandom">Random book</button>
+  <h3 data-i="mContrib">Contribute</h3>
+  <button class="mi" type="button" id="miPublish" data-i="publishYour">Publish your book</button>
+</aside>
+<div id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="panel">
+    <button class="x" id="modalX" type="button" aria-label="Close">×</button>
+    <div id="step1">
+      <h2 id="mTitle" data-i="needAcc">Log in to publish</h2>
+      <p data-i="needTxt">You need an account to publish a book. Log in or create one first.</p>
+      <div class="choice"><button class="btn" id="chLogin" type="button" data-i="login">Log In</button><button class="btn alt" id="chSignup" type="button" data-i="signup">Sign Up</button></div>
+    </div>
+    <form id="authForm" hidden novalidate>
+      <button class="back" id="authBack" type="button" data-i="back">Back</button>
+      <h2 id="authTitle"></h2>
+      <label id="nameRow"><span data-i="fName">Name</span><input name="n" maxlength="60" autocomplete="name"></label>
+      <label><span data-i="fEmail">Email</span><input name="e" type="email" autocomplete="email"></label>
+      <label><span data-i="fPass">Password</span><input name="p" type="password" autocomplete="current-password"></label>
+      <p class="msg" id="authMsg" role="status"></p>
+      <div><button class="btn" id="authGo" type="submit"></button></div>
+    </form>
+  </div>
+</div>
+
+<footer><span data-i="foot">Free to read. Open to authors everywhere.</span></footer>
+
+<script>
+/* 1. Text in two languages */
+var T={
+en:{browse:"Browse",publish:"Publish a book",tag:"Real books. Real moments.",sub:"Search free classics, read them in your browser, or publish your own book.",ph:"Search by title or author",search:"Search",all:"All",free:"Free",read:"Read",bm:"Bookmark",bmd:"Bookmarked",close:"Close",none:"No books match your search. Try another title or category.",pend:"Pending review",ptitle:"Publish your book",ft:"Title",fa:"Author",fl:"Language",fg:"Category",fd:"Description",fp:"Price (RWF, 0 for free)",submit:"Submit for review",err:"Enter a title and an author to continue.",ok:"Submitted. An admin will review it before it goes live.",foot:"Free to read. Open to authors everywhere.",by:"by",sample:"Sample page",txt:"In the full version, the book file loads from storage here, and Pagetide remembers the page where you stopped.",login:"Log In",signup:"Sign Up",logout:"Log out",hi:"Hi",mBrowse:"Browse",mAll:"All books",mCats:"Categories",mRandom:"Random book",mContrib:"Contribute",publishYour:"Publish your book",needAcc:"Log in to publish",needTxt:"You need an account to publish a book. Log in or create one first.",back:"Back",backHome:"Back to home",fName:"Name",fEmail:"Email",fPass:"Password",aErr:"Fill in every field. Use a valid email and a password of at least 6 characters.",aNo:"No account matches that email and password. Check them, or sign up first.",aDup:"An account with this email already exists. Log in instead."},
+fr:{browse:"Parcourir",publish:"Publier un livre",tag:"De vrais livres. De vrais moments.",sub:"Cherchez des classiques gratuits, lisez-les dans votre navigateur, ou publiez votre livre.",ph:"Rechercher un titre ou un auteur",search:"Rechercher",all:"Tous",free:"Gratuit",read:"Lire",bm:"Ajouter un signet",bmd:"Signet ajouté",close:"Fermer",none:"Aucun livre ne correspond. Essayez un autre titre ou une autre catégorie.",pend:"En attente de validation",ptitle:"Publiez votre livre",ft:"Titre",fa:"Auteur",fl:"Langue",fg:"Catégorie",fd:"Description",fp:"Prix (RWF, 0 pour gratuit)",submit:"Envoyer pour validation",err:"Saisissez un titre et un auteur pour continuer.",ok:"Envoyé. Un administrateur le validera avant sa mise en ligne.",foot:"Lecture gratuite. Ouvert aux auteurs du monde entier.",by:"de",sample:"Page d’exemple",txt:"Dans la version complète, le fichier du livre se charge ici depuis le stockage, et Pagetide retient la page où vous vous êtes arrêté.",login:"Se connecter",signup:"S’inscrire",logout:"Se déconnecter",hi:"Bonjour",mBrowse:"Parcourir",mAll:"Tous les livres",mCats:"Catégories",mRandom:"Livre au hasard",mContrib:"Contribuer",publishYour:"Publier votre livre",needAcc:"Connectez-vous pour publier",needTxt:"Il faut un compte pour publier un livre. Connectez-vous ou créez-en un d’abord.",back:"Retour",backHome:"Retour à l’accueil",fName:"Nom",fEmail:"E-mail",fPass:"Mot de passe",aErr:"Remplissez tous les champs. Utilisez un e-mail valide et un mot de passe d’au moins 6 caractères.",aNo:"Aucun compte ne correspond à cet e-mail et ce mot de passe. Vérifiez-les, ou inscrivez-vous d’abord.",aDup:"Un compte existe déjà avec cet e-mail. Connectez-vous."}};
+var G={romance:["Romance","Romance"],mystery:["Mystery","Policier"],adventure:["Adventure","Aventure"],classic:["Classic","Classique"],horror:["Horror","Horreur"],scifi:["Sci-fi","Science-fiction"],religion:["Religion","Religion"],science:["Science","Science"],fiction:["Fiction","Fiction"],history:["History","Histoire"],philosophy:["Philosophy","Philosophie"],poetry:["Poetry","Poésie"]};
+
+/* 2. Sample books (public domain classics) */
+var BOOKS=[
+{id:"b1",t:"Pride and Prejudice",a:"Jane Austen",l:"en",g:"romance",c:0,f:"Text, PDF, Audio",d:{en:"A sharp, witty love story about pride, class and first impressions.",fr:"Une histoire d’amour vive et spirituelle sur l’orgueil, la classe et les premières impressions."}},
+{id:"b2",t:"Dracula",a:"Bram Stoker",l:"en",g:"horror",c:1,f:"Text, PDF",d:{en:"A lawyer travels to Transylvania and finds a danger far older than he imagined.",fr:"Un avocat voyage en Transylvanie et découvre un danger bien plus ancien qu’il ne l’imaginait."}},
+{id:"b3",t:"Frankenstein",a:"Mary Shelley",l:"en",g:"scifi",c:2,f:"Text, Audio",d:{en:"A scientist creates life and must face what he has made.",fr:"Un scientifique crée la vie et doit affronter ce qu’il a fait."}},
+{id:"b4",t:"Les Misérables",a:"Victor Hugo",l:"fr",g:"classic",c:3,f:"Text, PDF",d:{en:"A grand story of justice, mercy and redemption in 19th-century France.",fr:"Une grande histoire de justice, de pitié et de rédemption dans la France du XIXe siècle."}},
+{id:"b5",t:"Le Comte de Monte-Cristo",a:"Alexandre Dumas",l:"fr",g:"adventure",c:0,f:"Text, Audio",d:{en:"A wrongly imprisoned man escapes and plans a patient revenge.",fr:"Un homme injustement emprisonné s’évade et prépare une vengeance patiente."}},
+{id:"b6",t:"The Adventures of Sherlock Holmes",a:"Arthur Conan Doyle",l:"en",g:"mystery",c:1,f:"Text, PDF, Audio",d:{en:"Twelve short cases for the world’s most famous detective.",fr:"Douze courtes enquêtes pour le détective le plus célèbre du monde."}},
+{id:"b7",t:"Vingt mille lieues sous les mers",a:"Jules Verne",l:"fr",g:"adventure",c:2,f:"Text, PDF",d:{en:"A deep-sea voyage aboard the mysterious submarine Nautilus.",fr:"Un voyage sous les océans à bord du mystérieux sous-marin Nautilus."}},
+{id:"b8",t:"The Time Machine",a:"H. G. Wells",l:"en",g:"scifi",c:3,f:"Text, Audio",d:{en:"An inventor travels far into the future and meets a changed humanity.",fr:"Un inventeur voyage loin dans le futur et découvre une humanité transformée."}},
+{id:"b9",t:"The Imitation of Christ",a:"Thomas à Kempis",l:"en",g:"religion",c:0,f:"Text, PDF",d:{en:"A quiet guide to faith, humility and daily spiritual life.",fr:"Un guide paisible sur la foi, l’humilité et la vie spirituelle quotidienne."}},
+{id:"b10",t:"On the Origin of Species",a:"Charles Darwin",l:"en",g:"science",c:1,f:"Text, PDF",d:{en:"The book that explained evolution by natural selection.",fr:"Le livre qui a expliqué l’évolution par la sélection naturelle."}},
+{id:"b11",t:"The Picture of Dorian Gray",a:"Oscar Wilde",l:"en",g:"fiction",c:2,f:"Text, Audio",d:{en:"A young man stays beautiful while his portrait carries the cost.",fr:"Un jeune homme reste beau tandis que son portrait en paie le prix."}},
+{id:"b12",t:"The Histories",a:"Herodotus",l:"en",g:"history",c:3,f:"Text",d:{en:"One of the first great accounts of the ancient world and its wars.",fr:"L’un des premiers grands récits du monde antique et de ses guerres."}},
+{id:"b13",t:"Meditations",a:"Marcus Aurelius",l:"en",g:"philosophy",c:0,f:"Text, Audio",d:{en:"Private notes from a Roman emperor on discipline and calm.",fr:"Notes personnelles d’un empereur romain sur la discipline et le calme."}},
+{id:"b14",t:"Leaves of Grass",a:"Walt Whitman",l:"en",g:"poetry",c:1,f:"Text, PDF",d:{en:"A landmark collection celebrating people, nature and everyday life.",fr:"Un recueil majeur qui célèbre les gens, la nature et la vie quotidienne."}}];
+
+/* 3. Safe storage helpers (storage can fail, so always try/catch) */
+function load(k,d){try{var v=localStorage.getItem("pt_"+k);return v?JSON.parse(v):d}catch(e){return d}}
+function save(k,v){try{localStorage.setItem("pt_"+k,JSON.stringify(v))}catch(e){}}
+
+var $=function(id){return document.getElementById(id)};
+var lang=load("lang","en"),genre="all",q="",mine=load("mine",[]),marks=load("bm",[]),fs=load("fs",19),cur=null;
+function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
+function gl(k){return G[k][lang==="fr"?1:0]}
+
+/* 4. Apply language to the whole page */
+function applyLang(){
+  document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(function(n){n.textContent=T[lang][n.dataset.i]});
+  document.querySelectorAll("[data-p]").forEach(function(n){n.placeholder=T[lang][n.dataset.p]});
+  $("langBtn").textContent=lang==="en"?"FR":"EN";
+  var keys=["all"].concat(Object.keys(G));
+  var chips=$("chips");chips.replaceChildren();
+  keys.forEach(function(k){
+    var b=el("button","chip",k==="all"?T[lang].all:gl(k));b.type="button";
+    b.setAttribute("aria-pressed",String(k===genre));
+    b.onclick=function(){genre=k;applyLang();render()};chips.append(b)});
+  var sel=$("gsel"),old=sel.value;sel.replaceChildren();
+  Object.keys(G).forEach(function(k){var o=el("option","",gl(k));o.value=k;sel.append(o)});
+  if(old)sel.value=old;
+}
+
+/* 5. Draw the book cards */
+function render(){
+  var grid=$("grid");grid.replaceChildren();
+  var list=BOOKS.concat(mine).filter(function(b){
+    return (genre==="all"||b.g===genre)&&(b.t+" "+b.a).toLowerCase().indexOf(q.toLowerCase())>-1});
+  if(!list.length){grid.append(el("p","empty",T[lang].none));return}
+  list.forEach(function(b){
+    var c=el("button","card");c.type="button";
+    var m=el("div","meta");m.append(el("strong","",b.t),el("span","",T[lang].by+" "+b.a));
+    var tags=el("div","tags");
+    tags.append(el("span","tag",b.l.toUpperCase()),el("span","tag",gl(b.g)),el("span","tag p",b.p?b.p+" RWF":T[lang].free));
+    if(b.pending)tags.append(el("span","tag",T[lang].pend));
+    m.append(tags);
+    c.append(el("div","cover c"+(b.c%4),b.t),m);
+    c.onclick=function(){openBook(b)};
+    grid.append(c)});
+}
+
+/* 6. Book page and simple reader */
+function openBook(b){
+  cur=b;$("detail").hidden=false;$("reader").hidden=true;
+  $("dt").textContent=b.t;$("da").textContent=T[lang].by+" "+b.a+"  ("+(b.f||"Text")+")";
+  $("dd").textContent=typeof b.d==="string"?b.d:(b.d[lang]||b.d.en);
+  setBm();
+  $("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
+}
+function setBm(){$("bmBtn").textContent=marks.indexOf(cur.id)>-1?T[lang].bmd:T[lang].bm}
+$("readBtn").onclick=function(){
+  var r=$("reader");r.replaceChildren(el("h3","",cur.t+" – "+T[lang].sample),el("p","",T[lang].txt));
+  r.style.fontSize=fs+"px";r.hidden=false};
+$("bmBtn").onclick=function(){
+  var i=marks.indexOf(cur.id);if(i>-1)marks.splice(i,1);else marks.push(cur.id);
+  save("bm",marks);setBm()};
+function size(d){fs=Math.min(30,Math.max(14,fs+d));save("fs",fs);$("reader").style.fontSize=fs+"px"}
+$("bigger").onclick=function(){size(2)};$("smaller").onclick=function(){size(-2)};
+$("closeBtn").onclick=function(){$("detail").hidden=true;cur=null};
+
+/* 7. Search and language buttons */
+$("go").onclick=function(){q=$("q").value.trim();render();$("browse").scrollIntoView()};
+$("q").onkeydown=function(e){if(e.key==="Enter")$("go").click()};
+$("langBtn").onclick=function(){lang=lang==="en"?"fr":"en";save("lang",lang);$("detail").hidden=true;applyLang();render();refreshAuth();showUser()};
+
+/* 8. Publish form: check input, then save the new book as "pending review" */
+$("form").onsubmit=function(e){
+  e.preventDefault();if(!me){after=openPublish;openModal("choose");return}var f=new FormData(e.target),msg=$("msg");
+  var t=(f.get("t")||"").trim(),a=(f.get("a")||"").trim();
+  if(!t||!a){msg.textContent=T[lang].err;msg.className="msg bad";return}
+  mine.push({id:"u"+Date.now(),t:t,a:a,l:f.get("l"),g:f.get("g"),c:mine.length,p:Math.max(0,Number(f.get("p"))||0),d:(f.get("d")||"").trim(),f:"Text",pending:true});
+  save("mine",mine);e.target.reset();msg.textContent=T[lang].ok;msg.className="msg ok";render()};
+
+/* 9. Accounts (demo only: saved in this browser, password stored as a hash) */
+var users=load("users",[]),me=load("me",null),mode="login",after=null;
+function show(id,on){$(id).hidden=!on}
+function showUser(){
+  show("loginBtn",!me);show("signupBtn",!me);show("who",!!me);show("logoutBtn",!!me);
+  if(me)$("who").textContent=T[lang].hi+", "+me.name}
+function refreshAuth(){
+  var w=mode==="login"?T[lang].login:T[lang].signup;
+  $("authTitle").textContent=w;$("authGo").textContent=w;show("nameRow",mode==="signup")}
+function openModal(m){
+  $("modal").hidden=false;$("authMsg").textContent="";
+  if(m==="choose"){show("step1",true);show("authForm",false)}
+  else{mode=m;show("step1",false);show("authForm",true);refreshAuth()}}
+function closeModal(){$("modal").hidden=true;after=null}
+function hash(s){
+  return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){
+    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")})}
+$("authForm").onsubmit=function(e){
+  e.preventDefault();var f=new FormData(e.target),msg=$("authMsg");
+  var n=(f.get("n")||"").trim(),em=(f.get("e")||"").trim().toLowerCase(),pw=f.get("p")||"";
+  var okMail=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em);
+  if(!okMail||pw.length<6||(mode==="signup"&&!n)){msg.textContent=T[lang].aErr;msg.className="msg bad";return}
+  hash(pw).then(function(h){
+    var u=users.filter(function(x){return x.email===em})[0];
+    if(mode==="signup"){
+      if(u){msg.textContent=T[lang].aDup;msg.className="msg bad";return}
+      u={name:n,email:em,h:h};users.push(u);save("users",users)
+    }else if(!u||u.h!==h){msg.textContent=T[lang].aNo;msg.className="msg bad";return}
+    me={name:u.name,email:u.email};save("me",me);showUser();
+    var next=after;e.target.reset();closeModal();if(next)next()})};
+
+/* 10. Menu, publish page and the login-first rule */
+function menu(on){show("drawer",on);show("scrim",on);$("menuBtn").setAttribute("aria-expanded",String(on))}
+function home(){show("publish",false);show("homeView",true)}
+function openPublish(){show("homeView",false);show("publish",true);window.scrollTo(0,0)}
+function wantPublish(){menu(false);if(me)openPublish();else{after=openPublish;openModal("choose")}}
+function go(w){
+  menu(false);home();
+  if(w==="all"){genre="all";q="";$("q").value="";applyLang();render();$("browse").scrollIntoView()}
+  if(w==="cats")$("chips").scrollIntoView({block:"center"});
+  if(w==="random"){var all=BOOKS.concat(mine);openBook(all[Math.floor(Math.random()*all.length)])}}
+$("menuBtn").onclick=function(){menu(true)};
+$("drawerX").onclick=$("scrim").onclick=function(){menu(false)};
+document.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
+$("miPublish").onclick=wantPublish;
+$("backHome").onclick=home;
+$("loginBtn").onclick=function(){after=null;openModal("login")};
+$("signupBtn").onclick=function(){after=null;openModal("signup")};
+$("chLogin").onclick=function(){openModal("login")};
+$("chSignup").onclick=function(){openModal("signup")};
+$("authBack").onclick=function(){openModal("choose")};
+$("modalX").onclick=closeModal;
+$("modal").onclick=function(e){if(e.target===this)closeModal()};
+$("logoutBtn").onclick=function(){me=null;save("me",null);showUser();home()};
+document.addEventListener("keydown",function(e){if(e.key==="Escape"){menu(false);closeModal()}});
+
+applyLang();render();showUser();refreshAuth();
+</script>
+</body>
+</html>
