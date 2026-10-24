@@ -40,6 +40,7 @@ button,input,select,textarea{font:inherit;color:inherit}
 .card:hover{border-color:var(--sage)}
 .cover{height:190px;padding:14px;display:flex;align-items:flex-end;font:600 19px/1.2 Fraunces,Georgia,serif;color:#FAF8F2}
 .c0{background:var(--emerald)}.c1{background:var(--pine)}.c2{background:var(--brown)}.c3{background:#3F6B3A}
+img.cover{width:100%;object-fit:cover;padding:0;display:block}
 .meta{padding:12px 14px 14px;display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--mut)}
 .meta strong{color:var(--ink);font-size:15px}
 .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
@@ -137,6 +138,8 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
         <select name="l"><option value="en">English</option><option value="fr">Français</option><option value="rw">Kinyarwanda</option></select></label>
       <label><span data-i="fg">Category</span><select name="g" id="gsel"></select></label>
       <label><span data-i="fd">Description</span><textarea name="d" rows="3" maxlength="500"></textarea></label>
+      <label><span data-i="fCover">Cover image (optional)</span><input name="c" type="file" accept="image/*"></label>
+      <label><span data-i="fFile">Book file (PDF or EPUB, up to 20 MB)</span><input name="b" type="file" accept=".pdf,.epub,application/pdf,application/epub+zip"></label>
       <label><span data-i="fp">Price (RWF, 0 for free)</span><input name="p" type="number" min="0" value="0"></label>
       <p class="msg" id="msg" role="status"></p>
       <div><button class="btn" type="submit" data-i="submit">Submit for review</button></div>
@@ -176,38 +179,28 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
 
 <footer><span data-i="foot">Free to read. Open to authors everywhere.</span></footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 /* 1. Text in two languages */
 var T={
-en:{browse:"Browse",publish:"Publish a book",tag:"Real books. Real moments.",sub:"Search free classics, read them in your browser, or publish your own book.",ph:"Search by title or author",search:"Search",all:"All",free:"Free",read:"Read",bm:"Bookmark",bmd:"Bookmarked",close:"Close",none:"No books match your search. Try another title or category.",pend:"Pending review",ptitle:"Publish your book",ft:"Title",fa:"Author",fl:"Language",fg:"Category",fd:"Description",fp:"Price (RWF, 0 for free)",submit:"Submit for review",err:"Enter a title and an author to continue.",ok:"Submitted. An admin will review it before it goes live.",foot:"Free to read. Open to authors everywhere.",by:"by",sample:"Sample page",txt:"In the full version, the book file loads from storage here, and Pagetide remembers the page where you stopped.",login:"Log In",signup:"Sign Up",logout:"Log out",hi:"Hi",mBrowse:"Browse",mAll:"All books",mCats:"Categories",mRandom:"Random book",mContrib:"Contribute",publishYour:"Publish your book",needAcc:"Log in to publish",needTxt:"You need an account to publish a book. Log in or create one first.",back:"Back",backHome:"Back to home",fName:"Name",fEmail:"Email",fPass:"Password",aErr:"Fill in every field. Use a valid email and a password of at least 6 characters.",aNo:"No account matches that email and password. Check them, or sign up first.",aDup:"An account with this email already exists. Log in instead."},
-fr:{browse:"Parcourir",publish:"Publier un livre",tag:"De vrais livres. De vrais moments.",sub:"Cherchez des classiques gratuits, lisez-les dans votre navigateur, ou publiez votre livre.",ph:"Rechercher un titre ou un auteur",search:"Rechercher",all:"Tous",free:"Gratuit",read:"Lire",bm:"Ajouter un signet",bmd:"Signet ajouté",close:"Fermer",none:"Aucun livre ne correspond. Essayez un autre titre ou une autre catégorie.",pend:"En attente de validation",ptitle:"Publiez votre livre",ft:"Titre",fa:"Auteur",fl:"Langue",fg:"Catégorie",fd:"Description",fp:"Prix (RWF, 0 pour gratuit)",submit:"Envoyer pour validation",err:"Saisissez un titre et un auteur pour continuer.",ok:"Envoyé. Un administrateur le validera avant sa mise en ligne.",foot:"Lecture gratuite. Ouvert aux auteurs du monde entier.",by:"de",sample:"Page d’exemple",txt:"Dans la version complète, le fichier du livre se charge ici depuis le stockage, et Pagetide retient la page où vous vous êtes arrêté.",login:"Se connecter",signup:"S’inscrire",logout:"Se déconnecter",hi:"Bonjour",mBrowse:"Parcourir",mAll:"Tous les livres",mCats:"Catégories",mRandom:"Livre au hasard",mContrib:"Contribuer",publishYour:"Publier votre livre",needAcc:"Connectez-vous pour publier",needTxt:"Il faut un compte pour publier un livre. Connectez-vous ou créez-en un d’abord.",back:"Retour",backHome:"Retour à l’accueil",fName:"Nom",fEmail:"E-mail",fPass:"Mot de passe",aErr:"Remplissez tous les champs. Utilisez un e-mail valide et un mot de passe d’au moins 6 caractères.",aNo:"Aucun compte ne correspond à cet e-mail et ce mot de passe. Vérifiez-les, ou inscrivez-vous d’abord.",aDup:"Un compte existe déjà avec cet e-mail. Connectez-vous."}};
+en:{browse:"Browse",publish:"Publish a book",tag:"Real books. Real moments.",sub:"Search free classics, read them in your browser, or publish your own book.",ph:"Search by title or author",search:"Search",all:"All",free:"Free",read:"Read",bm:"Bookmark",bmd:"Bookmarked",close:"Close",none:"No books match your search. Try another title or category.",pend:"Pending review",ptitle:"Publish your book",ft:"Title",fa:"Author",fl:"Language",fg:"Category",fd:"Description",fp:"Price (RWF, 0 for free)",submit:"Submit for review",err:"Enter a title and an author to continue.",ok:"Submitted. An admin will review it before it goes live.",foot:"Free to read. Open to authors everywhere.",by:"by",sample:"Sample page",txt:"In the full version, the book file loads from storage here, and Pagetide remembers the page where you stopped.",noBooks:"No books yet. Be the first to publish one.",aConfirm:"Account created. Check your email, click the confirmation link, then log in.",aFail:"Something went wrong. Please try again.",fCover:"Cover image (optional)",fFile:"Book file (PDF or EPUB, up to 20 MB)",uploading:"Uploading…",tooBig:"File too large. Book up to 20 MB, cover up to 5 MB.",open:"Open the book file",login:"Log In",signup:"Sign Up",logout:"Log out",hi:"Hi",mBrowse:"Browse",mAll:"All books",mCats:"Categories",mRandom:"Random book",mContrib:"Contribute",publishYour:"Publish your book",needAcc:"Log in to publish",needTxt:"You need an account to publish a book. Log in or create one first.",back:"Back",backHome:"Back to home",fName:"Name",fEmail:"Email",fPass:"Password",aErr:"Fill in every field. Use a valid email and a password of at least 6 characters.",aNo:"No account matches that email and password. Check them, or sign up first.",aDup:"An account with this email already exists. Log in instead."},
+fr:{browse:"Parcourir",publish:"Publier un livre",tag:"De vrais livres. De vrais moments.",sub:"Cherchez des classiques gratuits, lisez-les dans votre navigateur, ou publiez votre livre.",ph:"Rechercher un titre ou un auteur",search:"Rechercher",all:"Tous",free:"Gratuit",read:"Lire",bm:"Ajouter un signet",bmd:"Signet ajouté",close:"Fermer",none:"Aucun livre ne correspond. Essayez un autre titre ou une autre catégorie.",pend:"En attente de validation",ptitle:"Publiez votre livre",ft:"Titre",fa:"Auteur",fl:"Langue",fg:"Catégorie",fd:"Description",fp:"Prix (RWF, 0 pour gratuit)",submit:"Envoyer pour validation",err:"Saisissez un titre et un auteur pour continuer.",ok:"Envoyé. Un administrateur le validera avant sa mise en ligne.",foot:"Lecture gratuite. Ouvert aux auteurs du monde entier.",by:"de",sample:"Page d’exemple",txt:"Dans la version complète, le fichier du livre se charge ici depuis le stockage, et Pagetide retient la page où vous vous êtes arrêté.",noBooks:"Aucun livre pour le moment. Soyez le premier à en publier un.",aConfirm:"Compte créé. Vérifiez votre e-mail, cliquez sur le lien de confirmation, puis connectez-vous.",aFail:"Une erreur est survenue. Veuillez réessayer.",fCover:"Image de couverture (facultatif)",fFile:"Fichier du livre (PDF ou EPUB, jusqu’à 20 Mo)",uploading:"Envoi en cours…",tooBig:"Fichier trop volumineux. Livre jusqu’à 20 Mo, couverture jusqu’à 5 Mo.",open:"Ouvrir le fichier du livre",login:"Se connecter",signup:"S’inscrire",logout:"Se déconnecter",hi:"Bonjour",mBrowse:"Parcourir",mAll:"Tous les livres",mCats:"Catégories",mRandom:"Livre au hasard",mContrib:"Contribuer",publishYour:"Publier votre livre",needAcc:"Connectez-vous pour publier",needTxt:"Il faut un compte pour publier un livre. Connectez-vous ou créez-en un d’abord.",back:"Retour",backHome:"Retour à l’accueil",fName:"Nom",fEmail:"E-mail",fPass:"Mot de passe",aErr:"Remplissez tous les champs. Utilisez un e-mail valide et un mot de passe d’au moins 6 caractères.",aNo:"Aucun compte ne correspond à cet e-mail et ce mot de passe. Vérifiez-les, ou inscrivez-vous d’abord.",aDup:"Un compte existe déjà avec cet e-mail. Connectez-vous."}};
 var G={romance:["Romance","Romance"],mystery:["Mystery","Policier"],adventure:["Adventure","Aventure"],classic:["Classic","Classique"],horror:["Horror","Horreur"],scifi:["Sci-fi","Science-fiction"],religion:["Religion","Religion"],science:["Science","Science"],fiction:["Fiction","Fiction"],history:["History","Histoire"],philosophy:["Philosophy","Philosophie"],poetry:["Poetry","Poésie"]};
 
-/* 2. Sample books (public domain classics) */
-var BOOKS=[
-{id:"b1",t:"Pride and Prejudice",a:"Jane Austen",l:"en",g:"romance",c:0,f:"Text, PDF, Audio",d:{en:"A sharp, witty love story about pride, class and first impressions.",fr:"Une histoire d’amour vive et spirituelle sur l’orgueil, la classe et les premières impressions."}},
-{id:"b2",t:"Dracula",a:"Bram Stoker",l:"en",g:"horror",c:1,f:"Text, PDF",d:{en:"A lawyer travels to Transylvania and finds a danger far older than he imagined.",fr:"Un avocat voyage en Transylvanie et découvre un danger bien plus ancien qu’il ne l’imaginait."}},
-{id:"b3",t:"Frankenstein",a:"Mary Shelley",l:"en",g:"scifi",c:2,f:"Text, Audio",d:{en:"A scientist creates life and must face what he has made.",fr:"Un scientifique crée la vie et doit affronter ce qu’il a fait."}},
-{id:"b4",t:"Les Misérables",a:"Victor Hugo",l:"fr",g:"classic",c:3,f:"Text, PDF",d:{en:"A grand story of justice, mercy and redemption in 19th-century France.",fr:"Une grande histoire de justice, de pitié et de rédemption dans la France du XIXe siècle."}},
-{id:"b5",t:"Le Comte de Monte-Cristo",a:"Alexandre Dumas",l:"fr",g:"adventure",c:0,f:"Text, Audio",d:{en:"A wrongly imprisoned man escapes and plans a patient revenge.",fr:"Un homme injustement emprisonné s’évade et prépare une vengeance patiente."}},
-{id:"b6",t:"The Adventures of Sherlock Holmes",a:"Arthur Conan Doyle",l:"en",g:"mystery",c:1,f:"Text, PDF, Audio",d:{en:"Twelve short cases for the world’s most famous detective.",fr:"Douze courtes enquêtes pour le détective le plus célèbre du monde."}},
-{id:"b7",t:"Vingt mille lieues sous les mers",a:"Jules Verne",l:"fr",g:"adventure",c:2,f:"Text, PDF",d:{en:"A deep-sea voyage aboard the mysterious submarine Nautilus.",fr:"Un voyage sous les océans à bord du mystérieux sous-marin Nautilus."}},
-{id:"b8",t:"The Time Machine",a:"H. G. Wells",l:"en",g:"scifi",c:3,f:"Text, Audio",d:{en:"An inventor travels far into the future and meets a changed humanity.",fr:"Un inventeur voyage loin dans le futur et découvre une humanité transformée."}},
-{id:"b9",t:"The Imitation of Christ",a:"Thomas à Kempis",l:"en",g:"religion",c:0,f:"Text, PDF",d:{en:"A quiet guide to faith, humility and daily spiritual life.",fr:"Un guide paisible sur la foi, l’humilité et la vie spirituelle quotidienne."}},
-{id:"b10",t:"On the Origin of Species",a:"Charles Darwin",l:"en",g:"science",c:1,f:"Text, PDF",d:{en:"The book that explained evolution by natural selection.",fr:"Le livre qui a expliqué l’évolution par la sélection naturelle."}},
-{id:"b11",t:"The Picture of Dorian Gray",a:"Oscar Wilde",l:"en",g:"fiction",c:2,f:"Text, Audio",d:{en:"A young man stays beautiful while his portrait carries the cost.",fr:"Un jeune homme reste beau tandis que son portrait en paie le prix."}},
-{id:"b12",t:"The Histories",a:"Herodotus",l:"en",g:"history",c:3,f:"Text",d:{en:"One of the first great accounts of the ancient world and its wars.",fr:"L’un des premiers grands récits du monde antique et de ses guerres."}},
-{id:"b13",t:"Meditations",a:"Marcus Aurelius",l:"en",g:"philosophy",c:0,f:"Text, Audio",d:{en:"Private notes from a Roman emperor on discipline and calm.",fr:"Notes personnelles d’un empereur romain sur la discipline et le calme."}},
-{id:"b14",t:"Leaves of Grass",a:"Walt Whitman",l:"en",g:"poetry",c:1,f:"Text, PDF",d:{en:"A landmark collection celebrating people, nature and everyday life.",fr:"Un recueil majeur qui célèbre les gens, la nature et la vie quotidienne."}}];
+/* 2. Connect to Supabase. The anon key is public by design; Row Level Security protects the data. */
+var sb=supabase.createClient("https://pggknfbviznsztowphex.supabase.co","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBnZ2tuZmJ2aXpuc3p0b3dwaGV4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI3ODM1MjAsImV4cCI6MjEwODM1OTUyMH0.qX-pOIRpKbUw7zMoaTtatDcRh4GOjQCvfZOZMfvTxho");
 
-/* 3. Safe storage helpers (storage can fail, so always try/catch) */
+/* 3. Small helpers */
 function load(k,d){try{var v=localStorage.getItem("pt_"+k);return v?JSON.parse(v):d}catch(e){return d}}
 function save(k,v){try{localStorage.setItem("pt_"+k,JSON.stringify(v))}catch(e){}}
-
 var $=function(id){return document.getElementById(id)};
-var lang=load("lang","en"),genre="all",q="",mine=load("mine",[]),marks=load("bm",[]),fs=load("fs",19),cur=null;
+var lang=load("lang","en"),genre="all",q="",marks=load("bm",[]),fs=load("fs",19),cur=null,books=[],me=null,mode="login",after=null;
 function el(tag,cls,txt){var n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n}
-function gl(k){return G[k][lang==="fr"?1:0]}
+function gl(k){return G[k]?G[k][lang==="fr"?1:0]:k}
+function show(id,on){$(id).hidden=!on}
+function pub(bucket,path){return sb.storage.from(bucket).getPublicUrl(path).data.publicUrl}
+function safe(n){return n.replace(/[^a-z0-9._-]/gi,"_")}
+function slug(t){return t.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,50)}
 
 /* 4. Apply language to the whole page */
 function applyLang(){
@@ -215,70 +208,75 @@ function applyLang(){
   document.querySelectorAll("[data-i]").forEach(function(n){n.textContent=T[lang][n.dataset.i]});
   document.querySelectorAll("[data-p]").forEach(function(n){n.placeholder=T[lang][n.dataset.p]});
   $("langBtn").textContent=lang==="en"?"FR":"EN";
-  var keys=["all"].concat(Object.keys(G));
   var chips=$("chips");chips.replaceChildren();
-  keys.forEach(function(k){
+  ["all"].concat(Object.keys(G)).forEach(function(k){
     var b=el("button","chip",k==="all"?T[lang].all:gl(k));b.type="button";
     b.setAttribute("aria-pressed",String(k===genre));
     b.onclick=function(){genre=k;applyLang();render()};chips.append(b)});
   var sel=$("gsel"),old=sel.value;sel.replaceChildren();
   Object.keys(G).forEach(function(k){var o=el("option","",gl(k));o.value=k;sel.append(o)});
   if(old)sel.value=old;
+  showUser();refreshAuth();
 }
 
-/* 5. Draw the book cards */
+/* 5. Books come from the Supabase "books" table (the database rules decide which ones you may see) */
+function loadBooks(){
+  return sb.from("books").select("*").order("created_at",{ascending:false}).then(function(r){
+    books=r.error?[]:r.data;render()})}
 function render(){
   var grid=$("grid");grid.replaceChildren();
-  var list=BOOKS.concat(mine).filter(function(b){
-    return (genre==="all"||b.g===genre)&&(b.t+" "+b.a).toLowerCase().indexOf(q.toLowerCase())>-1});
-  if(!list.length){grid.append(el("p","empty",T[lang].none));return}
+  var list=books.filter(function(b){
+    return (genre==="all"||b.category===genre)&&(b.title+" "+b.author).toLowerCase().indexOf(q.toLowerCase())>-1});
+  if(!list.length){grid.append(el("p","empty",books.length?T[lang].none:T[lang].noBooks));return}
   list.forEach(function(b){
-    var c=el("button","card");c.type="button";
-    var m=el("div","meta");m.append(el("strong","",b.t),el("span","",T[lang].by+" "+b.a));
+    var c=el("button","card"),cv;c.type="button";
+    if(b.cover_path){cv=el("img","cover");cv.src=pub("covers",b.cover_path);cv.alt=b.title;cv.loading="lazy"}
+    else cv=el("div","cover c"+(b.title.length%4),b.title);
+    var m=el("div","meta");m.append(el("strong","",b.title),el("span","",T[lang].by+" "+b.author));
     var tags=el("div","tags");
-    tags.append(el("span","tag",b.l.toUpperCase()),el("span","tag",gl(b.g)),el("span","tag p",b.p?b.p+" RWF":T[lang].free));
-    if(b.pending)tags.append(el("span","tag",T[lang].pend));
-    m.append(tags);
-    c.append(el("div","cover c"+(b.c%4),b.t),m);
+    tags.append(el("span","tag",b.language.toUpperCase()),el("span","tag",gl(b.category)),el("span","tag p",b.price_rwf?b.price_rwf+" RWF":T[lang].free));
+    if(b.status==="pending")tags.append(el("span","tag",T[lang].pend));
+    m.append(tags);c.append(cv,m);
     c.onclick=function(){openBook(b)};
     grid.append(c)});
 }
 
-/* 6. Book page and simple reader */
+/* 6. Book page and reader (PDF shows inside the page; other files open in a new tab) */
 function openBook(b){
-  cur=b;$("detail").hidden=false;$("reader").hidden=true;
-  $("dt").textContent=b.t;$("da").textContent=T[lang].by+" "+b.a+"  ("+(b.f||"Text")+")";
-  $("dd").textContent=typeof b.d==="string"?b.d:(b.d[lang]||b.d.en);
+  cur=b;show("detail",true);$("reader").hidden=true;
+  $("dt").textContent=b.title;$("da").textContent=T[lang].by+" "+b.author+"  ("+(b.formats||["text"]).join(", ")+")";
+  $("dd").textContent=b.description||"";
   setBm();
   $("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 }
 function setBm(){$("bmBtn").textContent=marks.indexOf(cur.id)>-1?T[lang].bmd:T[lang].bm}
 $("readBtn").onclick=function(){
-  var r=$("reader");r.replaceChildren(el("h3","",cur.t+" – "+T[lang].sample),el("p","",T[lang].txt));
-  r.style.fontSize=fs+"px";r.hidden=false};
+  var r=$("reader");r.hidden=false;r.style.fontSize=fs+"px";r.style.maxWidth="68ch";
+  if(cur.file_path){
+    var url=pub("books",cur.file_path);
+    if(/\.pdf$/i.test(cur.file_path)){
+      var fr=el("iframe");fr.src=url;fr.title=cur.title;fr.style.cssText="width:100%;height:70vh;border:0";
+      r.style.maxWidth="none";r.replaceChildren(fr)}
+    else{var a=el("a","",T[lang].open);a.href=url;a.target="_blank";a.rel="noopener";r.replaceChildren(a)}
+  }else r.replaceChildren(el("h3","",cur.title+" – "+T[lang].sample),el("p","",T[lang].txt))};
 $("bmBtn").onclick=function(){
   var i=marks.indexOf(cur.id);if(i>-1)marks.splice(i,1);else marks.push(cur.id);
   save("bm",marks);setBm()};
 function size(d){fs=Math.min(30,Math.max(14,fs+d));save("fs",fs);$("reader").style.fontSize=fs+"px"}
 $("bigger").onclick=function(){size(2)};$("smaller").onclick=function(){size(-2)};
-$("closeBtn").onclick=function(){$("detail").hidden=true;cur=null};
+$("closeBtn").onclick=function(){show("detail",false);cur=null};
 
 /* 7. Search and language buttons */
 $("go").onclick=function(){q=$("q").value.trim();render();$("browse").scrollIntoView()};
 $("q").onkeydown=function(e){if(e.key==="Enter")$("go").click()};
-$("langBtn").onclick=function(){lang=lang==="en"?"fr":"en";save("lang",lang);$("detail").hidden=true;applyLang();render();refreshAuth();showUser()};
+$("langBtn").onclick=function(){lang=lang==="en"?"fr":"en";save("lang",lang);show("detail",false);applyLang();render()};
 
-/* 8. Publish form: check input, then save the new book as "pending review" */
-$("form").onsubmit=function(e){
-  e.preventDefault();if(!me){after=openPublish;openModal("choose");return}var f=new FormData(e.target),msg=$("msg");
-  var t=(f.get("t")||"").trim(),a=(f.get("a")||"").trim();
-  if(!t||!a){msg.textContent=T[lang].err;msg.className="msg bad";return}
-  mine.push({id:"u"+Date.now(),t:t,a:a,l:f.get("l"),g:f.get("g"),c:mine.length,p:Math.max(0,Number(f.get("p"))||0),d:(f.get("d")||"").trim(),f:"Text",pending:true});
-  save("mine",mine);e.target.reset();msg.textContent=T[lang].ok;msg.className="msg ok";render()};
-
-/* 9. Accounts (demo only: saved in this browser, password stored as a hash) */
-var users=load("users",[]),me=load("me",null),mode="login",after=null;
-function show(id,on){$(id).hidden=!on}
+/* 8. Real accounts with Supabase Auth */
+function setMe(s){
+  me=s?{id:s.user.id,email:s.user.email,name:(s.user.user_metadata&&s.user.user_metadata.name)||s.user.email}:null;
+  showUser()}
+sb.auth.getSession().then(function(r){setMe(r.data.session)});
+sb.auth.onAuthStateChange(function(ev,s){setMe(s)});
 function showUser(){
   show("loginBtn",!me);show("signupBtn",!me);show("who",!!me);show("logoutBtn",!!me);
   if(me)$("who").textContent=T[lang].hi+", "+me.name}
@@ -286,28 +284,27 @@ function refreshAuth(){
   var w=mode==="login"?T[lang].login:T[lang].signup;
   $("authTitle").textContent=w;$("authGo").textContent=w;show("nameRow",mode==="signup")}
 function openModal(m){
-  $("modal").hidden=false;$("authMsg").textContent="";
+  show("modal",true);$("authMsg").textContent="";
   if(m==="choose"){show("step1",true);show("authForm",false)}
   else{mode=m;show("step1",false);show("authForm",true);refreshAuth()}}
-function closeModal(){$("modal").hidden=true;after=null}
-function hash(s){
-  return crypto.subtle.digest("SHA-256",new TextEncoder().encode(s)).then(function(b){
-    return Array.from(new Uint8Array(b)).map(function(x){return x.toString(16).padStart(2,"0")}).join("")})}
+function closeModal(){show("modal",false);after=null}
 $("authForm").onsubmit=function(e){
-  e.preventDefault();var f=new FormData(e.target),msg=$("authMsg");
+  e.preventDefault();var f=new FormData(e.target),msg=$("authMsg"),btn=$("authGo");
   var n=(f.get("n")||"").trim(),em=(f.get("e")||"").trim().toLowerCase(),pw=f.get("p")||"";
-  var okMail=/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em);
-  if(!okMail||pw.length<6||(mode==="signup"&&!n)){msg.textContent=T[lang].aErr;msg.className="msg bad";return}
-  hash(pw).then(function(h){
-    var u=users.filter(function(x){return x.email===em})[0];
-    if(mode==="signup"){
-      if(u){msg.textContent=T[lang].aDup;msg.className="msg bad";return}
-      u={name:n,email:em,h:h};users.push(u);save("users",users)
-    }else if(!u||u.h!==h){msg.textContent=T[lang].aNo;msg.className="msg bad";return}
-    me={name:u.name,email:u.email};save("me",me);showUser();
-    var next=after;e.target.reset();closeModal();if(next)next()})};
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)||pw.length<6||(mode==="signup"&&!n)){msg.textContent=T[lang].aErr;msg.className="msg bad";return}
+  btn.disabled=true;
+  var p=mode==="signup"?sb.auth.signUp({email:em,password:pw,options:{data:{name:n}}}):sb.auth.signInWithPassword({email:em,password:pw});
+  p.then(function(r){
+    btn.disabled=false;
+    if(r.error){var m=r.error.message||"";
+      msg.textContent=/invalid login/i.test(m)?T[lang].aNo:/registered|already/i.test(m)?T[lang].aDup:(m||T[lang].aFail);
+      msg.className="msg bad";return}
+    if(mode==="signup"&&!r.data.session){msg.textContent=T[lang].aConfirm;msg.className="msg ok";return}
+    setMe(r.data.session);
+    var next=after;e.target.reset();closeModal();if(next)next()
+  }).catch(function(){btn.disabled=false;msg.textContent=T[lang].aFail;msg.className="msg bad"})};
 
-/* 10. Menu, publish page and the login-first rule */
+/* 9. Menu, publish page and the login-first rule */
 function menu(on){show("drawer",on);show("scrim",on);$("menuBtn").setAttribute("aria-expanded",String(on))}
 function home(){show("publish",false);show("homeView",true)}
 function openPublish(){show("homeView",false);show("publish",true);window.scrollTo(0,0)}
@@ -316,7 +313,7 @@ function go(w){
   menu(false);home();
   if(w==="all"){genre="all";q="";$("q").value="";applyLang();render();$("browse").scrollIntoView()}
   if(w==="cats")$("chips").scrollIntoView({block:"center"});
-  if(w==="random"){var all=BOOKS.concat(mine);openBook(all[Math.floor(Math.random()*all.length)])}}
+  if(w==="random"&&books.length)openBook(books[Math.floor(Math.random()*books.length)])}
 $("menuBtn").onclick=function(){menu(true)};
 $("drawerX").onclick=$("scrim").onclick=function(){menu(false)};
 document.querySelectorAll("[data-go]").forEach(function(b){b.onclick=function(){go(b.dataset.go)}});
@@ -329,10 +326,28 @@ $("chSignup").onclick=function(){openModal("signup")};
 $("authBack").onclick=function(){openModal("choose")};
 $("modalX").onclick=closeModal;
 $("modal").onclick=function(e){if(e.target===this)closeModal()};
-$("logoutBtn").onclick=function(){me=null;save("me",null);showUser();home()};
+$("logoutBtn").onclick=function(){sb.auth.signOut().then(function(){setMe(null);home()})};
 document.addEventListener("keydown",function(e){if(e.key==="Escape"){menu(false);closeModal()}});
 
-applyLang();render();showUser();refreshAuth();
+/* 10. Publish form: upload files, then save the book as "pending" until an admin approves it */
+$("form").onsubmit=async function(e){
+  e.preventDefault();
+  if(!me){after=openPublish;openModal("choose");return}
+  var f=new FormData(e.target),msg=$("msg");
+  var t=(f.get("t")||"").trim(),a=(f.get("a")||"").trim(),cover=f.get("c"),file=f.get("b");
+  if(!t||!a){msg.textContent=T[lang].err;msg.className="msg bad";return}
+  if((file&&file.size>20971520)||(cover&&cover.size>5242880)){msg.textContent=T[lang].tooBig;msg.className="msg bad";return}
+  msg.textContent=T[lang].uploading;msg.className="msg";
+  try{
+    var cp=null,fp=null,fm=["text"],r;
+    if(cover&&cover.size){cp=me.id+"/"+Date.now()+"-"+safe(cover.name);r=await sb.storage.from("covers").upload(cp,cover);if(r.error)throw r.error}
+    if(file&&file.size){fp=me.id+"/"+Date.now()+"-"+safe(file.name);r=await sb.storage.from("books").upload(fp,file);if(r.error)throw r.error;fm=[/\.pdf$/i.test(file.name)?"pdf":"text"]}
+    r=await sb.from("books").insert({slug:slug(t)+"-"+Math.random().toString(36).slice(2,7),owner_id:me.id,title:t,author:a,language:f.get("l"),category:f.get("g"),description:(f.get("d")||"").trim(),price_rwf:Math.max(0,Math.floor(Number(f.get("p"))||0)),formats:fm,cover_path:cp,file_path:fp,status:"pending"});
+    if(r.error)throw r.error;
+    e.target.reset();msg.textContent=T[lang].ok;msg.className="msg ok";loadBooks()
+  }catch(err){msg.textContent=T[lang].aFail+" ("+(err.message||"")+")";msg.className="msg bad"}};
+
+applyLang();loadBooks();
 </script>
 </body>
 </html>
