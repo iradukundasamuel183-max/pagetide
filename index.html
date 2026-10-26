@@ -78,12 +78,62 @@ form input,form select,form textarea{border:1px solid var(--sage);border-radius:
 .panel form{max-width:none}
 .choice{display:grid;gap:10px;margin-top:16px}
 .back{background:none;border:0;color:var(--ink);cursor:pointer;margin-bottom:12px;padding:0;text-decoration:underline}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes pop{from{opacity:0;transform:scale(.94) translateY(8px)}to{opacity:1;transform:none}}
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:none}}
+@keyframes sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-10deg) scale(1.08)}}
+.top{animation:fadeIn .6s ease backwards}
+.hero h1{animation:fadeUp .7s ease backwards}
+.hero p{animation:fadeUp .7s .12s ease backwards}
+.search{animation:fadeUp .7s .24s ease backwards}
+.chips{animation:fadeUp .7s .36s ease backwards}
+.wrap>h2,#detail h2{animation:fadeUp .6s ease backwards}
+.card{animation:fadeUp .5s ease backwards;animation-delay:calc(var(--i,0)*70ms);transition:transform .25s ease,border-color .25s ease}
+.card:hover{transform:translateY(-6px)}
+.card:active{transform:scale(.97)}
+.card .cover{transition:transform .4s ease}
+.card:hover .cover{transform:scale(1.04)}
+.btn,.chip,.lang,.mi,.tab,.rb,.lk{transition:transform .15s ease,background-color .2s ease,color .2s ease,border-color .2s ease}
+.btn:hover,.chip:hover,.tab:hover,.rb:hover{transform:translateY(-2px)}
+.btn:active,.chip:active,.tab:active,.rb:active{transform:scale(.96)}
+.brand svg{transition:transform .4s ease}
+.brand:hover svg{animation:sway .8s ease}
+#homeView:not([hidden]),#profileView:not([hidden]){animation:fadeIn .4s ease}
+#detail:not([hidden]){animation:fadeUp .4s ease}
+#scrim:not([hidden]){animation:fadeIn .25s ease}
+#drawer:not([hidden]){animation:slideIn .3s ease}
+#modal:not([hidden]){animation:fadeIn .2s ease}
+#modal:not([hidden]) .panel{animation:pop .3s ease}
+.cmt{animation:fadeUp .35s ease backwards}
+.avatar{width:38px;height:38px;border-radius:50%;background:var(--leaf);color:var(--pine);display:flex;align-items:center;justify-content:center;font:700 17px Fraunces,Georgia,serif;overflow:hidden;border:2px solid var(--champ);cursor:pointer;padding:0;flex:none;transition:transform .2s ease}
+button.avatar:hover{transform:scale(1.1)}
+.avatar img{width:100%;height:100%;object-fit:cover}
+.avatar.big{width:96px;height:96px;font-size:40px;cursor:default}
+.phead{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin-bottom:24px}
+.phead h2{margin:0}
+.phead .acts{margin:10px 0 0}
+.mut{color:var(--mut)}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.tab{border:1px solid var(--sage);background:transparent;border-radius:99px;padding:8px 20px;cursor:pointer}
+.tab[aria-selected="true"]{background:var(--leaf);color:var(--pine);border-color:var(--leaf)}
+.react{display:flex;gap:10px;align-items:center;margin:16px 0}
+.rb{border:1px solid var(--sage);background:transparent;border-radius:99px;padding:6px 16px;cursor:pointer;display:flex;gap:8px;align-items:center}
+.rb[aria-pressed="true"]{background:var(--leaf);color:var(--pine);border-color:var(--leaf)}
+.cbox{margin-top:24px;max-width:68ch}
+.cbox h3{margin:0 0 10px}
+.cbox textarea{width:100%;border:1px solid var(--sage);border-radius:8px;padding:10px 12px;background:var(--card)}
+.cmt{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--soft)}
+.cmt .avatar{width:34px;height:34px;font-size:15px;cursor:default}
+.cmt small{color:var(--mut)}
+.cmt p{margin:2px 0 0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
 </style>
 </head>
 <body>
 <header class="top">
-  <a class="brand" href="#top">
+  <a class="brand" href="#top" id="brand">
     <svg width="34" height="34" viewBox="0 0 40 40" aria-hidden="true"><path d="M5 15v17c4-2 10-2 15 1V16c-5-3-10-3-15-1z" fill="#FAF8F2"/><path d="M35 15v17c-4-2-10-2-15 1V16c5-3 10-3 15-1z" fill="#FAF8F2" opacity=".85"/><path d="M20 3c9 2 13 10 10 17-7-1-12-7-10-17z" fill="#7AC043"/></svg>
     Pagetide
   </a>
@@ -91,8 +141,7 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
     <button class="lang" id="langBtn" type="button" aria-label="Change language">FR</button>
     <button class="lk" id="loginBtn" type="button" data-i="login">Log In</button>
     <button class="btn" id="signupBtn" type="button" data-i="signup">Sign Up</button>
-    <span id="who" hidden></span>
-    <button class="lk" id="logoutBtn" type="button" hidden data-i="logout">Log out</button>
+    <button class="avatar" id="avatarBtn" type="button" hidden aria-label="Profile"></button>
     <button class="menuBtn" id="menuBtn" type="button" aria-label="Menu" aria-expanded="false" aria-controls="drawer"><svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg></button>
   </nav>
 </header>
@@ -121,16 +170,44 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
       <button class="btn alt" id="closeBtn" type="button" data-i="close">Close</button>
     </div>
     <div id="reader" hidden></div>
+    <div class="react">
+      <button class="rb" id="likeBtn" type="button" aria-pressed="false" aria-label="Like"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span id="likeN">0</span></button>
+      <button class="rb" id="dislikeBtn" type="button" aria-pressed="false" aria-label="Dislike"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transform:rotate(180deg)"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg><span id="dislikeN">0</span></button>
+    </div>
+    <div class="cbox">
+      <h3 data-i="comments">Comments</h3>
+      <textarea id="cIn" rows="3" maxlength="1000" data-p="cPh" placeholder="Write a comment" aria-label="Comment"></textarea>
+      <div class="acts"><button class="btn" id="cSend" type="button" data-i="send">Post comment</button></div>
+      <p class="msg" id="cMsg" role="status"></p>
+      <div id="cList"></div>
+    </div>
   </section>
   <h2 data-i="browse">Browse</h2>
   <div class="grid" id="grid"></div>
 </main>
 </div>
 
-<section class="pub" id="publish" hidden>
+<section class="pub" id="profileView" hidden>
   <div class="wrap">
     <button class="back" id="backHome" type="button" data-i="backHome">Back to home</button>
-    <h2 data-i="ptitle">Publish your book</h2>
+    <div class="phead">
+      <div class="avatar big" id="pAvatar"></div>
+      <div>
+        <h2 id="pName"></h2>
+        <div class="mut" id="pEmail"></div>
+        <div class="acts">
+          <label class="btn alt" style="cursor:pointer"><span data-i="chPhoto">Change photo</span><input type="file" id="avatarIn" accept="image/*" hidden></label>
+          <button class="btn alt" id="logoutBtn" type="button" data-i="logout">Log out</button>
+        </div>
+        <p class="msg" id="pMsg" role="status"></p>
+      </div>
+    </div>
+    <div class="tabs" role="tablist">
+      <button class="tab" id="tabBooks" type="button" role="tab" data-i="myBooks">My books</button>
+      <button class="tab" id="tabPub" type="button" role="tab" data-i="ptitle">Publish your book</button>
+    </div>
+    <div id="paneBooks"><div class="grid" id="myGrid"></div></div>
+    <div id="panePub" hidden>
     <form id="form" novalidate>
       <label><span data-i="ft">Title</span><input name="t" maxlength="120"></label>
       <label><span data-i="fa">Author</span><input name="a" maxlength="80"></label>
@@ -144,6 +221,7 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
       <p class="msg" id="msg" role="status"></p>
       <div><button class="btn" type="submit" data-i="submit">Submit for review</button></div>
     </form>
+    </div>
   </div>
 </section>
 
@@ -183,8 +261,8 @@ footer{background:var(--pine);color:#D9E4DC;text-align:center;padding:28px 24px}
 <script>
 /* 1. Text in two languages */
 var T={
-en:{browse:"Browse",publish:"Publish a book",tag:"Real books. Real moments.",sub:"Search free classics, read them in your browser, or publish your own book.",ph:"Search by title or author",search:"Search",all:"All",free:"Free",read:"Read",bm:"Bookmark",bmd:"Bookmarked",close:"Close",none:"No books match your search. Try another title or category.",pend:"Pending review",ptitle:"Publish your book",ft:"Title",fa:"Author",fl:"Language",fg:"Category",fd:"Description",fp:"Price (RWF, 0 for free)",submit:"Submit for review",err:"Enter a title and an author to continue.",ok:"Submitted. An admin will review it before it goes live.",foot:"Free to read. Open to authors everywhere.",by:"by",sample:"Sample page",txt:"In the full version, the book file loads from storage here, and Pagetide remembers the page where you stopped.",noBooks:"No books yet. Be the first to publish one.",aConfirm:"Account created. Check your email, click the confirmation link, then log in.",aFail:"Something went wrong. Please try again.",fCover:"Cover image (optional)",fFile:"Book file (PDF or EPUB, up to 20 MB)",uploading:"Uploading…",tooBig:"File too large. Book up to 20 MB, cover up to 5 MB.",open:"Open the book file",login:"Log In",signup:"Sign Up",logout:"Log out",hi:"Hi",mBrowse:"Browse",mAll:"All books",mCats:"Categories",mRandom:"Random book",mContrib:"Contribute",publishYour:"Publish your book",needAcc:"Log in to publish",needTxt:"You need an account to publish a book. Log in or create one first.",back:"Back",backHome:"Back to home",fName:"Name",fEmail:"Email",fPass:"Password",aErr:"Fill in every field. Use a valid email and a password of at least 6 characters.",aNo:"No account matches that email and password. Check them, or sign up first.",aDup:"An account with this email already exists. Log in instead."},
-fr:{browse:"Parcourir",publish:"Publier un livre",tag:"De vrais livres. De vrais moments.",sub:"Cherchez des classiques gratuits, lisez-les dans votre navigateur, ou publiez votre livre.",ph:"Rechercher un titre ou un auteur",search:"Rechercher",all:"Tous",free:"Gratuit",read:"Lire",bm:"Ajouter un signet",bmd:"Signet ajouté",close:"Fermer",none:"Aucun livre ne correspond. Essayez un autre titre ou une autre catégorie.",pend:"En attente de validation",ptitle:"Publiez votre livre",ft:"Titre",fa:"Auteur",fl:"Langue",fg:"Catégorie",fd:"Description",fp:"Prix (RWF, 0 pour gratuit)",submit:"Envoyer pour validation",err:"Saisissez un titre et un auteur pour continuer.",ok:"Envoyé. Un administrateur le validera avant sa mise en ligne.",foot:"Lecture gratuite. Ouvert aux auteurs du monde entier.",by:"de",sample:"Page d’exemple",txt:"Dans la version complète, le fichier du livre se charge ici depuis le stockage, et Pagetide retient la page où vous vous êtes arrêté.",noBooks:"Aucun livre pour le moment. Soyez le premier à en publier un.",aConfirm:"Compte créé. Vérifiez votre e-mail, cliquez sur le lien de confirmation, puis connectez-vous.",aFail:"Une erreur est survenue. Veuillez réessayer.",fCover:"Image de couverture (facultatif)",fFile:"Fichier du livre (PDF ou EPUB, jusqu’à 20 Mo)",uploading:"Envoi en cours…",tooBig:"Fichier trop volumineux. Livre jusqu’à 20 Mo, couverture jusqu’à 5 Mo.",open:"Ouvrir le fichier du livre",login:"Se connecter",signup:"S’inscrire",logout:"Se déconnecter",hi:"Bonjour",mBrowse:"Parcourir",mAll:"Tous les livres",mCats:"Catégories",mRandom:"Livre au hasard",mContrib:"Contribuer",publishYour:"Publier votre livre",needAcc:"Connectez-vous pour publier",needTxt:"Il faut un compte pour publier un livre. Connectez-vous ou créez-en un d’abord.",back:"Retour",backHome:"Retour à l’accueil",fName:"Nom",fEmail:"E-mail",fPass:"Mot de passe",aErr:"Remplissez tous les champs. Utilisez un e-mail valide et un mot de passe d’au moins 6 caractères.",aNo:"Aucun compte ne correspond à cet e-mail et ce mot de passe. Vérifiez-les, ou inscrivez-vous d’abord.",aDup:"Un compte existe déjà avec cet e-mail. Connectez-vous."}};
+en:{browse:"Browse",publish:"Publish a book",tag:"Real books. Real moments.",sub:"Search free classics, read them in your browser, or publish your own book.",ph:"Search by title or author",search:"Search",all:"All",free:"Free",read:"Read",bm:"Bookmark",bmd:"Bookmarked",close:"Close",none:"No books match your search. Try another title or category.",pend:"Pending review",ptitle:"Publish your book",ft:"Title",fa:"Author",fl:"Language",fg:"Category",fd:"Description",fp:"Price (RWF, 0 for free)",submit:"Submit for review",err:"Enter a title and an author to continue.",ok:"Submitted. An admin will review it before it goes live.",foot:"Free to read. Open to authors everywhere.",by:"by",sample:"Sample page",txt:"In the full version, the book file loads from storage here, and Pagetide remembers the page where you stopped.",noBooks:"No books yet. Be the first to publish one.",aConfirm:"Account created. Check your email, click the confirmation link, then log in.",aFail:"Something went wrong. Please try again.",fCover:"Cover image (optional)",fFile:"Book file (PDF or EPUB, up to 20 MB)",uploading:"Uploading…",tooBig:"File too large. Book up to 20 MB, cover up to 5 MB.",open:"Open the book file",myBooks:"My books",chPhoto:"Change photo",comments:"Comments",send:"Post comment",cPh:"Write a comment",cEmpty:"No comments yet. Start the conversation.",noMine:"You haven’t published a book yet.",photoOk:"Photo updated.",photoBad:"Choose an image up to 5 MB.",del:"Delete",login:"Log In",signup:"Sign Up",logout:"Log out",hi:"Hi",mBrowse:"Browse",mAll:"All books",mCats:"Categories",mRandom:"Random book",mContrib:"Contribute",publishYour:"Publish your book",needAcc:"Log in to publish",needTxt:"You need an account to publish a book. Log in or create one first.",back:"Back",backHome:"Back to home",fName:"Name",fEmail:"Email",fPass:"Password",aErr:"Fill in every field. Use a valid email and a password of at least 6 characters.",aNo:"No account matches that email and password. Check them, or sign up first.",aDup:"An account with this email already exists. Log in instead."},
+fr:{browse:"Parcourir",publish:"Publier un livre",tag:"De vrais livres. De vrais moments.",sub:"Cherchez des classiques gratuits, lisez-les dans votre navigateur, ou publiez votre livre.",ph:"Rechercher un titre ou un auteur",search:"Rechercher",all:"Tous",free:"Gratuit",read:"Lire",bm:"Ajouter un signet",bmd:"Signet ajouté",close:"Fermer",none:"Aucun livre ne correspond. Essayez un autre titre ou une autre catégorie.",pend:"En attente de validation",ptitle:"Publiez votre livre",ft:"Titre",fa:"Auteur",fl:"Langue",fg:"Catégorie",fd:"Description",fp:"Prix (RWF, 0 pour gratuit)",submit:"Envoyer pour validation",err:"Saisissez un titre et un auteur pour continuer.",ok:"Envoyé. Un administrateur le validera avant sa mise en ligne.",foot:"Lecture gratuite. Ouvert aux auteurs du monde entier.",by:"de",sample:"Page d’exemple",txt:"Dans la version complète, le fichier du livre se charge ici depuis le stockage, et Pagetide retient la page où vous vous êtes arrêté.",noBooks:"Aucun livre pour le moment. Soyez le premier à en publier un.",aConfirm:"Compte créé. Vérifiez votre e-mail, cliquez sur le lien de confirmation, puis connectez-vous.",aFail:"Une erreur est survenue. Veuillez réessayer.",fCover:"Image de couverture (facultatif)",fFile:"Fichier du livre (PDF ou EPUB, jusqu’à 20 Mo)",uploading:"Envoi en cours…",tooBig:"Fichier trop volumineux. Livre jusqu’à 20 Mo, couverture jusqu’à 5 Mo.",open:"Ouvrir le fichier du livre",myBooks:"Mes livres",chPhoto:"Changer la photo",comments:"Commentaires",send:"Publier le commentaire",cPh:"Écrivez un commentaire",cEmpty:"Aucun commentaire pour le moment. Lancez la conversation.",noMine:"Vous n’avez pas encore publié de livre.",photoOk:"Photo mise à jour.",photoBad:"Choisissez une image de 5 Mo maximum.",del:"Supprimer",login:"Se connecter",signup:"S’inscrire",logout:"Se déconnecter",hi:"Bonjour",mBrowse:"Parcourir",mAll:"Tous les livres",mCats:"Catégories",mRandom:"Livre au hasard",mContrib:"Contribuer",publishYour:"Publier votre livre",needAcc:"Connectez-vous pour publier",needTxt:"Il faut un compte pour publier un livre. Connectez-vous ou créez-en un d’abord.",back:"Retour",backHome:"Retour à l’accueil",fName:"Nom",fEmail:"E-mail",fPass:"Mot de passe",aErr:"Remplissez tous les champs. Utilisez un e-mail valide et un mot de passe d’au moins 6 caractères.",aNo:"Aucun compte ne correspond à cet e-mail et ce mot de passe. Vérifiez-les, ou inscrivez-vous d’abord.",aDup:"Un compte existe déjà avec cet e-mail. Connectez-vous."}};
 var G={romance:["Romance","Romance"],mystery:["Mystery","Policier"],adventure:["Adventure","Aventure"],classic:["Classic","Classique"],horror:["Horror","Horreur"],scifi:["Sci-fi","Science-fiction"],religion:["Religion","Religion"],science:["Science","Science"],fiction:["Fiction","Fiction"],history:["History","Histoire"],philosophy:["Philosophy","Philosophie"],poetry:["Poetry","Poésie"]};
 
 /* 2. Connect to Supabase. The anon key is public by design; Row Level Security protects the data. */
@@ -223,30 +301,30 @@ function applyLang(){
 function loadBooks(){
   return sb.from("books").select("*").order("created_at",{ascending:false}).then(function(r){
     books=r.error?[]:r.data;render()})}
+function card(b,i){
+  var c=el("button","card"),cv;c.type="button";c.style.setProperty("--i",Math.min(i,10));
+  if(b.cover_path){cv=el("img","cover");cv.src=pub("covers",b.cover_path);cv.alt=b.title;cv.loading="lazy"}
+  else cv=el("div","cover c"+(b.title.length%4),b.title);
+  var m=el("div","meta");m.append(el("strong","",b.title),el("span","",T[lang].by+" "+b.author));
+  var tags=el("div","tags");
+  tags.append(el("span","tag",b.language.toUpperCase()),el("span","tag",gl(b.category)),el("span","tag p",b.price_rwf?b.price_rwf+" RWF":T[lang].free));
+  if(b.status==="pending")tags.append(el("span","tag",T[lang].pend));
+  m.append(tags);c.append(cv,m);
+  c.onclick=function(){home();openBook(b)};
+  return c}
 function render(){
   var grid=$("grid");grid.replaceChildren();
   var list=books.filter(function(b){
     return (genre==="all"||b.category===genre)&&(b.title+" "+b.author).toLowerCase().indexOf(q.toLowerCase())>-1});
   if(!list.length){grid.append(el("p","empty",books.length?T[lang].none:T[lang].noBooks));return}
-  list.forEach(function(b){
-    var c=el("button","card"),cv;c.type="button";
-    if(b.cover_path){cv=el("img","cover");cv.src=pub("covers",b.cover_path);cv.alt=b.title;cv.loading="lazy"}
-    else cv=el("div","cover c"+(b.title.length%4),b.title);
-    var m=el("div","meta");m.append(el("strong","",b.title),el("span","",T[lang].by+" "+b.author));
-    var tags=el("div","tags");
-    tags.append(el("span","tag",b.language.toUpperCase()),el("span","tag",gl(b.category)),el("span","tag p",b.price_rwf?b.price_rwf+" RWF":T[lang].free));
-    if(b.status==="pending")tags.append(el("span","tag",T[lang].pend));
-    m.append(tags);c.append(cv,m);
-    c.onclick=function(){openBook(b)};
-    grid.append(c)});
-}
+  list.forEach(function(b,i){grid.append(card(b,i))})}
 
 /* 6. Book page and reader (PDF shows inside the page; other files open in a new tab) */
 function openBook(b){
   cur=b;show("detail",true);$("reader").hidden=true;
   $("dt").textContent=b.title;$("da").textContent=T[lang].by+" "+b.author+"  ("+(b.formats||["text"]).join(", ")+")";
   $("dd").textContent=b.description||"";
-  setBm();
+  setBm();loadReactions();loadComments();$("cIn").value="";
   $("detail").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth",block:"start"});
 }
 function setBm(){$("bmBtn").textContent=marks.indexOf(cur.id)>-1?T[lang].bmd:T[lang].bm}
@@ -273,13 +351,21 @@ $("langBtn").onclick=function(){lang=lang==="en"?"fr":"en";save("lang",lang);sho
 
 /* 8. Real accounts with Supabase Auth */
 function setMe(s){
-  me=s?{id:s.user.id,email:s.user.email,name:(s.user.user_metadata&&s.user.user_metadata.name)||s.user.email}:null;
-  showUser()}
+  me=s?{id:s.user.id,email:s.user.email,name:(s.user.user_metadata&&s.user.user_metadata.name)||s.user.email,avatar:null}:null;
+  showUser();
+  if(me)setTimeout(function(){
+    if(!me)return;
+    sb.from("profiles").select("name,avatar_path").eq("id",me.id).maybeSingle().then(function(r){
+      if(r.data&&me){me.avatar=r.data.avatar_path;if(r.data.name)me.name=r.data.name;showUser()}})},0)}
 sb.auth.getSession().then(function(r){setMe(r.data.session)});
 sb.auth.onAuthStateChange(function(ev,s){setMe(s)});
+function avatarFill(node,name,path){
+  node.replaceChildren();
+  if(path){var i=el("img");i.src=pub("avatars",path);i.alt=name;node.append(i)}
+  else node.textContent=(name||"?").trim().charAt(0).toUpperCase()}
 function showUser(){
-  show("loginBtn",!me);show("signupBtn",!me);show("who",!!me);show("logoutBtn",!!me);
-  if(me)$("who").textContent=T[lang].hi+", "+me.name}
+  show("loginBtn",!me);show("signupBtn",!me);show("avatarBtn",!!me);
+  if(me){avatarFill($("avatarBtn"),me.name,me.avatar);avatarFill($("pAvatar"),me.name,me.avatar);$("pName").textContent=me.name;$("pEmail").textContent=me.email}}
 function refreshAuth(){
   var w=mode==="login"?T[lang].login:T[lang].signup;
   $("authTitle").textContent=w;$("authGo").textContent=w;show("nameRow",mode==="signup")}
@@ -306,8 +392,9 @@ $("authForm").onsubmit=function(e){
 
 /* 9. Menu, publish page and the login-first rule */
 function menu(on){show("drawer",on);show("scrim",on);$("menuBtn").setAttribute("aria-expanded",String(on))}
-function home(){show("publish",false);show("homeView",true)}
-function openPublish(){show("homeView",false);show("publish",true);window.scrollTo(0,0)}
+function home(){show("profileView",false);show("homeView",true)}
+function openProfile(t){show("homeView",false);show("profileView",true);setTab(t||"books");window.scrollTo(0,0);loadMine()}
+function openPublish(){openProfile("pub")}
 function wantPublish(){menu(false);if(me)openPublish();else{after=openPublish;openModal("choose")}}
 function go(w){
   menu(false);home();
@@ -344,8 +431,76 @@ $("form").onsubmit=async function(e){
     if(file&&file.size){fp=me.id+"/"+Date.now()+"-"+safe(file.name);r=await sb.storage.from("books").upload(fp,file);if(r.error)throw r.error;fm=[/\.pdf$/i.test(file.name)?"pdf":"text"]}
     r=await sb.from("books").insert({slug:slug(t)+"-"+Math.random().toString(36).slice(2,7),owner_id:me.id,title:t,author:a,language:f.get("l"),category:f.get("g"),description:(f.get("d")||"").trim(),price_rwf:Math.max(0,Math.floor(Number(f.get("p"))||0)),formats:fm,cover_path:cp,file_path:fp,status:"pending"});
     if(r.error)throw r.error;
-    e.target.reset();msg.textContent=T[lang].ok;msg.className="msg ok";loadBooks()
+    e.target.reset();msg.textContent=T[lang].ok;msg.className="msg ok";loadBooks();loadMine()
   }catch(err){msg.textContent=T[lang].aFail+" ("+(err.message||"")+")";msg.className="msg bad"}};
+
+/* 11. Logo goes home, profile page (tabs, my books, photo) */
+$("brand").onclick=function(e){e.preventDefault();menu(false);closeModal();show("detail",false);home();window.scrollTo(0,0)};
+function setTab(t){
+  show("paneBooks",t==="books");show("panePub",t==="pub");
+  $("tabBooks").setAttribute("aria-selected",String(t==="books"));$("tabPub").setAttribute("aria-selected",String(t==="pub"))}
+$("tabBooks").onclick=function(){setTab("books")};
+$("tabPub").onclick=function(){setTab("pub")};
+$("avatarBtn").onclick=function(){openProfile("books")};
+function loadMine(){
+  if(!me)return;
+  sb.from("books").select("*").eq("owner_id",me.id).order("created_at",{ascending:false}).then(function(r){
+    var g=$("myGrid");g.replaceChildren();
+    if(r.error||!r.data.length){g.append(el("p","empty",T[lang].noMine));return}
+    r.data.forEach(function(b,i){g.append(card(b,i))})})}
+$("avatarIn").onchange=function(e){
+  var f=e.target.files[0],m=$("pMsg");if(!f||!me)return;
+  if(f.size>5242880||f.type.indexOf("image/")!==0){m.textContent=T[lang].photoBad;m.className="msg bad";return}
+  var path=me.id+"/"+Date.now()+"-"+safe(f.name);
+  sb.storage.from("avatars").upload(path,f).then(function(r){
+    if(r.error)throw r.error;
+    return sb.from("profiles").update({avatar_path:path}).eq("id",me.id)
+  }).then(function(r){
+    if(r.error)throw r.error;
+    me.avatar=path;showUser();m.textContent=T[lang].photoOk;m.className="msg ok"
+  }).catch(function(){m.textContent=T[lang].aFail;m.className="msg bad"});
+  e.target.value=""};
+
+/* 12. Likes, dislikes and comments */
+var myVote=0;
+function loadReactions(){
+  var b=cur;if(!b)return;
+  sb.from("reactions").select("user_id,value").eq("book_id",b.id).then(function(r){
+    if(!cur||cur.id!==b.id)return;
+    var l=0,d=0;myVote=0;
+    (r.data||[]).forEach(function(x){if(x.value===1)l++;else d++;if(me&&x.user_id===me.id)myVote=x.value});
+    $("likeN").textContent=l;$("dislikeN").textContent=d;
+    $("likeBtn").setAttribute("aria-pressed",String(myVote===1));
+    $("dislikeBtn").setAttribute("aria-pressed",String(myVote===-1))})}
+function vote(v){
+  if(!me){after=function(){vote(v)};openModal("choose");return}
+  var b=cur,p=myVote===v
+    ?sb.from("reactions").delete().eq("book_id",b.id).eq("user_id",me.id)
+    :sb.from("reactions").upsert({book_id:b.id,user_id:me.id,value:v},{onConflict:"book_id,user_id"});
+  p.then(function(){loadReactions()})}
+$("likeBtn").onclick=function(){vote(1)};
+$("dislikeBtn").onclick=function(){vote(-1)};
+function loadComments(){
+  var b=cur;if(!b)return;
+  sb.from("comments").select("id,body,created_at,user_id,profiles(name,avatar_path)").eq("book_id",b.id).order("created_at",{ascending:false}).then(function(r){
+    if(!cur||cur.id!==b.id)return;
+    var box=$("cList");box.replaceChildren();
+    if(r.error||!r.data.length){box.append(el("p","empty",T[lang].cEmpty));return}
+    r.data.forEach(function(c){
+      var row=el("div","cmt"),av=el("div","avatar"),body=el("div");
+      var nm=(c.profiles&&c.profiles.name)||"Reader";
+      avatarFill(av,nm,c.profiles&&c.profiles.avatar_path);
+      body.append(el("strong","",nm),document.createTextNode("  "),el("small","",new Date(c.created_at).toLocaleDateString(lang==="fr"?"fr-FR":"en-GB")),el("p","",c.body));
+      if(me&&c.user_id===me.id){
+        var x=el("button","lk",T[lang].del);x.type="button";x.style.color="var(--mut)";
+        x.onclick=function(){sb.from("comments").delete().eq("id",c.id).then(loadComments)};body.append(x)}
+      row.append(av,body);box.append(row)})})}
+$("cSend").onclick=function(){
+  if(!me){after=function(){$("cSend").click()};openModal("choose");return}
+  var t=$("cIn").value.trim(),m=$("cMsg");if(!t||!cur)return;
+  sb.from("comments").insert({book_id:cur.id,user_id:me.id,body:t}).then(function(r){
+    if(r.error){m.textContent=T[lang].aFail;m.className="msg bad";return}
+    $("cIn").value="";m.textContent="";loadComments()})};
 
 applyLang();loadBooks();
 </script>
